@@ -8,7 +8,7 @@ MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E5267A6C && \
 	echo "deb http://ppa.launchpad.net/ondrej/php5/ubuntu trusty main" >> /etc/apt/sources.list.d/php.list && \
 	echo "deb-src http://ppa.launchpad.net/ondrej/php5/ubuntu trusty main" >> /etc/apt/sources.list.d/php.list && \
-	apt-get update && apt-get upgrade \
+	apt-get update && apt-get upgrade && \
     apt-get install -y sendmail php5-fpm php5-curl php5-gd php5-imagick php5-mcrypt php5-mysql php5-sqlite php5-memcache php5-memcached
 
 ADD ./php-fpm.conf /etc/php5/fpm/php-fpm.conf
