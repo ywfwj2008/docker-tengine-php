@@ -12,6 +12,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E5267A6C && \
     apt-get install -y sendmail php5-fpm php5-curl php5-gd php5-imagick php5-mcrypt php5-mysql php5-sqlite php5-memcache php5-memcached
 
 ADD ./php-fpm.conf /etc/php5/fpm/php-fpm.conf
+ADD ./tz.php /home/wwwroot/default/tz.php
 
 # tweak php-fpm config
 RUN sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" /etc/php5/fpm/php.ini && /
