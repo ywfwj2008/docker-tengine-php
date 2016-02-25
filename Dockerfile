@@ -15,8 +15,8 @@ ADD ./php-fpm.conf /etc/php5/fpm/php-fpm.conf
 ADD ./tz.php /home/wwwroot/default/tz.php
 
 # tweak php-fpm config
-RUN sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php5/fpm/php.ini && \
-    #sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" /etc/php5/fpm/php.ini && \
+RUN #sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" /etc/php5/fpm/php.ini && \
+    sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php5/fpm/php.ini && \
     sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php5/fpm/php.ini && \
     sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php5/fpm/php.ini && \
     sed -i 's@^expose_php = On@expose_php = Off@' /etc/php5/fpm/php.ini && \
