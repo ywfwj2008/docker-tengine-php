@@ -87,7 +87,7 @@ RUN sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR
     sed -i 's@^upload_max_filesize.*@upload_max_filesize = 50M@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^max_execution_time.*@max_execution_time = 5@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' $PHP_INSTALL_DIR/etc/php.ini && \
-    [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini
+    [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini && \
     # edit php-fpm.conf
     sed -i 's@/dev/shm@/run/shm@' $PHP_INSTALL_DIR/etc/php-fpm.conf && \
     sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
@@ -104,19 +104,6 @@ RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPC
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
     make && make install
-
-RUN cat >> $PHP_INSTALL_DIR/etc/php.ini << EOF
-[opcache]
-zend_extension="`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/opcache.so"
-opcache.memory_consumption=$MEMORY_LIMIT
-opcache.interned_strings_buffer=8
-opcache.max_accelerated_files=4000
-opcache.revalidate_freq=60
-opcache.save_comments=0
-opcache.fast_shutdown=1
-opcache.enable_cli=1
-;opcache.optimization_level=0
-EOF
 
 RUN sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^;opcache.enable=.*@opcache.enable=1@' $PHP_INSTALL_DIR/etc/php.ini && \
