@@ -2,6 +2,10 @@ FROM ywfwj2008/tengine:latest
 
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
+ENV PHP_ETC_DIR=/etc/php5/fpm
+ENV RUN_USER=www
+ENV MEMORY_LIMIT=256
+
 # Update base image
 # Add sources for latest php5.5
 # Install software requirements
@@ -11,33 +15,70 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E5267A6C && \
 	apt-get update && apt-get upgrade -y && \
     apt-get install -y sendmail php5-fpm php5-curl php5-xmlrpc php5-xsl php5-gd php5-imagick php5-mcrypt php5-mysql php5-sqlite php5-memcache php5-memcached
 
-ADD ./php-fpm.conf /etc/php5/fpm/php-fpm.conf
-ADD ./tz.php /home/wwwroot/default/tz.php
+# add php-fpm config file
+RUN cat > $PHP_ETC_DIR/php-fpm.conf <<EOF
+;;;;;;;;;;;;;;;;;;;;;
+; FPM Configuration ;
+;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;
+; Global Options ;
+;;;;;;;;;;;;;;;;;;
+
+[global]
+pid = run/php-fpm.pid
+error_log = log/php-fpm.log
+log_level = warning
+
+emergency_restart_threshold = 30
+emergency_restart_interval = 60s
+process_control_timeout = 5s
+daemonize = yes
+
+;;;;;;;;;;;;;;;;;;;;
+; Pool Definitions ;
+;;;;;;;;;;;;;;;;;;;;
+
+[$RUN_USER]
+listen = /dev/shm/php-cgi.sock
+listen.backlog = -1
+listen.allowed_clients = 127.0.0.1
+listen.owner = $RUN_USER
+listen.group = $RUN_USER
+listen.mode = 0666
+user = $RUN_USER
+group = $RUN_USER
+
+pm = dynamic
+pm.max_children = 12
+pm.start_servers = 8
+pm.min_spare_servers = 6
+pm.max_spare_servers = 12
+pm.max_requests = 2048
+pm.process_idle_timeout = 10s
+request_terminate_timeout = 120
+request_slowlog_timeout = 0
+
+pm.status_path = /php-fpm_status
+slowlog = log/slow.log
+rlimit_files = 51200
+rlimit_core = 0
+
+catch_workers_output = yes
+;env[HOSTNAME] = $HOSTNAME
+env[PATH] = /usr/local/bin:/usr/bin:/bin
+env[TMP] = /tmp
+env[TMPDIR] = /tmp
+env[TEMP] = /tmp
+EOF
 
 # tweak php-fpm config
-RUN #sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" /etc/php5/fpm/php.ini && \
-    sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^expose_php = On@expose_php = Off@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^request_order.*@request_order = "CGP"@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 50M@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^max_execution_time.*@max_execution_time = 5@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' /etc/php5/fpm/php.ini && \
-    [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' /etc/php5/fpm/php.ini
-
-RUN sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.enable=.*@opcache.enable=1@' /etc/php5/fpm/php.ini && \
-    sed -i "s@^;opcache.memory_consumption.*@opcache.memory_consumption=$Memory_limit@" /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.interned_strings_buffer.*@opcache.interned_strings_buffer=8@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.max_accelerated_files.*@opcache.max_accelerated_files=4000@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.revalidate_freq.*@opcache.revalidate_freq=60@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.save_comments.*@opcache.save_comments=0@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.fast_shutdown.*@opcache.fast_shutdown=1@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.enable_cli.*@opcache.enable_cli=1@' /etc/php5/fpm/php.ini && \
-    sed -i 's@^;opcache.optimization_level.*@;opcache.optimization_level=0@' /etc/php5/fpm/php.ini
+RUN sed -i 's@/dev/shm@/run/shm@' $PHP_ETC_DIR/php-fpm.conf && \
+    sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_ETC_DIR/php-fpm.conf && \
+    sed -i "s@^pm.start_servers.*@pm.start_servers = 40@" $PHP_ETC_DIR/php-fpm.conf && \
+    sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 30@" $PHP_ETC_DIR/php-fpm.conf && \
+    sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 60@" $PHP_ETC_DIR/php-fpm.conf && \
+    service php-fpm start
 
 RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
 
