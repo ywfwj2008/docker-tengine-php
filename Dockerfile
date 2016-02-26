@@ -73,15 +73,11 @@ env[TEMP] = /tmp
 EOF
 
 # tweak php-fpm config
-RUN sed -i 's@/dev/shm@/run/shm@' $PHP_ETC_DIR/php-fpm.conf && \
-    sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_ETC_DIR/php-fpm.conf && \
+RUN sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_ETC_DIR/php-fpm.conf && \
     sed -i "s@^pm.start_servers.*@pm.start_servers = 40@" $PHP_ETC_DIR/php-fpm.conf && \
     sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 30@" $PHP_ETC_DIR/php-fpm.conf && \
-    sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 60@" $PHP_ETC_DIR/php-fpm.conf && \
-    service php-fpm start
+    sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 60@" $PHP_ETC_DIR/php-fpm.conf
 
 RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
-
 EXPOSE 80 443
-
 #ENTRYPOINT ["/entrypoint.sh"]

@@ -57,7 +57,7 @@ RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
     patch -d php-$PHP_5_VERSION -p0 < fpm-race-condition.patch && \
     cd php-$PHP_5_VERSION && \
     ./configure --prefix=$PHP_INSTALL_DIR --with-config-file-path=$PHP_INSTALL_DIR/etc \
-    --with-fpm-user=$RUN_USER --with-fpm-group=$RUN_USER --enable-fpm --disable-fileinfo \
+    --with-fpm-user=$RUN_USER --with-fpm-group=$RUN_USER --enable-fpm --enable-opcache --disable-fileinfo \
     --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
     --with-iconv-dir=/usr/local --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib \
     --with-libxml-dir=/usr --enable-xml --disable-rpath --enable-bcmath --enable-shmop --enable-exif \
@@ -74,8 +74,14 @@ RUN cd php-$PHP_5_VERSION && \
     chmod +x /etc/init.d/php-fpm && \
     update-rc.d php-fpm defaults
 
-# add and edit php.ini and php-fpm.conf
+# edit php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
+RUN sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
+    sed -i "s@^pm.start_servers.*@pm.start_servers = 40@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
+    sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 30@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
+    sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf
+
+# edit php.ini
 RUN sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' $PHP_INSTALL_DIR/etc/php.ini && \
@@ -87,14 +93,7 @@ RUN sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR
     sed -i 's@^upload_max_filesize.*@upload_max_filesize = 50M@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^max_execution_time.*@max_execution_time = 5@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' $PHP_INSTALL_DIR/etc/php.ini && \
-    [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini && \
-    # edit php-fpm.conf
-    sed -i 's@/dev/shm@/run/shm@' $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    sed -i "s@^pm.start_servers.*@pm.start_servers = 40@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 30@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    service php-fpm start
+    [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini
 
 # install zendopcache
 ENV ZENDOPCACHE_VERSION=7.0.5
@@ -115,3 +114,7 @@ RUN sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_D
     sed -i 's@^;opcache.fast_shutdown.*@opcache.fast_shutdown=1@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^;opcache.enable_cli.*@opcache.enable_cli=1@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^;opcache.optimization_level.*@;opcache.optimization_level=0@' $PHP_INSTALL_DIR/etc/php.ini
+
+RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
+EXPOSE 80 443
+#ENTRYPOINT ["/entrypoint.sh"]
