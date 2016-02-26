@@ -6,6 +6,9 @@ ENV LIBMCRYPT_VERSION=2.5.8
 ENV MHASH_VERSION=0.9.9.9
 ENV MCRYPT_VERSION=2.6.8
 ENV PHP_5_VERSION=5.5.32
+ENV ZENDOPCACHE_VERSION=7.0.5
+ENV IMAGEMAGICK_VERSION=6.8.8-10
+ENV IMAGICK_VERSION=3.3.0
 ENV PHP_INSTALL_DIR=/usr/local/php
 ENV RUN_USER=www
 ENV MEMORY_LIMIT=256
@@ -28,7 +31,7 @@ RUN tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
     patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
     cd libiconv-$LIBICONV_VERSION && \
     ./configure --prefix=/usr/local && \
-    make && make install
+    make && make install && \
 
 RUN tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
     cd libmcrypt-$LIBMCRYPT_VERSION && \
@@ -53,6 +56,7 @@ RUN tar xzf mcrypt-$MCRYPT_VERSION.tar.gz && \
 RUN echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf && \
     ldconfig
 
+# install php5
 RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
     patch -d php-$PHP_5_VERSION -p0 < fpm-race-condition.patch && \
     cd php-$PHP_5_VERSION && \
@@ -96,7 +100,6 @@ RUN sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR
     [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini
 
 # install zendopcache
-ENV ZENDOPCACHE_VERSION=7.0.5
 RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPCACHE_VERSION.tgz && \
     tar xzf zendopcache-$ZENDOPCACHE_VERSION.tgz && \
     cd zendopcache-$ZENDOPCACHE_VERSION && \
@@ -115,6 +118,26 @@ RUN sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_D
     sed -i 's@^;opcache.enable_cli.*@opcache.enable_cli=1@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^;opcache.optimization_level.*@;opcache.optimization_level=0@' $PHP_INSTALL_DIR/etc/php.ini
 
+# install ImageMagick
+RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/imagemagick/old-sources/6.x/6.8/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
+    tar xzf ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
+    cd ImageMagick-$IMAGEMAGICK_VERSION && \
+    ./configure --prefix=/usr/local/imagemagick && \
+    make && make install
+
+RUN wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERSION.tgz && \
+    tar xzf imagick-$IMAGICK_VERSION.tgz && \
+    cd imagick-$IMAGICK_VERSION && \
+    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig && \
+    $PHP_INSTALL_DIR/bin/phpize && \
+    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --with-imagick=/usr/local/imagemagick && \
+    make && make install
+
+RUN sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini && \
+    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
+
+# ending
 RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
 EXPOSE 80 443
-#ENTRYPOINT ["/entrypoint.sh"]
+# ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# CMD ["-c", "/usr/local/tengine/conf/nginx.conf"]
