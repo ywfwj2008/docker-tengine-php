@@ -137,6 +137,7 @@ RUN sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
 
 # ending
+RUN rm -rf /tmp/*
 RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
 EXPOSE 80 443
 # ENTRYPOINT ["nginx", "-g", "daemon off;"]
