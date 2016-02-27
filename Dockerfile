@@ -31,7 +31,7 @@ RUN tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
     patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
     cd libiconv-$LIBICONV_VERSION && \
     ./configure --prefix=/usr/local && \
-    make && make install && \
+    make && make install
 
 RUN tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
     cd libmcrypt-$LIBMCRYPT_VERSION && \
