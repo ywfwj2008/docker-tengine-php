@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
-command="$@"
+service php-fpm start
 
-${command}
+#command="$@"
+#${command}
