@@ -143,8 +143,8 @@ RUN rm -rf /tmp/*
 EXPOSE 80 443
 
 # Set the entrypoint script.
-ADD entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+# ADD entrypoint.sh /entrypoint.sh
+# ENTRYPOINT ["/entrypoint.sh"]
 
 # Define the default command.
 CMD ["nginx", "-c", "/usr/local/tengine/conf/nginx.conf"]
