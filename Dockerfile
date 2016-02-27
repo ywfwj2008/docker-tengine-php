@@ -147,4 +147,4 @@ EXPOSE 80 443
 # ENTRYPOINT ["/entrypoint.sh"]
 
 # Define the default command.
-# CMD ["nginx", "-c", "/usr/local/tengine/conf/nginx.conf"]
+CMD ["nginx", "-g", "daemon off;"]
