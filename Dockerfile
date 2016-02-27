@@ -137,8 +137,13 @@ RUN sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
 
 # ending
-RUN rm -rf /tmp/*
 RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
+RUN rm -rf /tmp/*
+
 EXPOSE 80 443
-# ENTRYPOINT ["nginx", "-g", "daemon off;"]
-# CMD ["-c", "/usr/local/tengine/conf/nginx.conf"]
+
+# Set the entrypoint script.
+ENTRYPOINT ["./entrypoint.sh"]
+
+# Define the default command.
+CMD ["nginx", "-c", "/usr/local/tengine/conf/nginx.conf"]
