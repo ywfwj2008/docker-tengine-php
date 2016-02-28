@@ -145,7 +145,7 @@ EXPOSE 80 443
 
 # Set the entrypoint script.
 ADD entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+# ENTRYPOINT ["/entrypoint.sh"]
 
 # Define the default command.
 # CMD ["nginx", "-g", "daemon off;"]
