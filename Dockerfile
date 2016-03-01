@@ -71,9 +71,7 @@ RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
     --with-mhash --enable-pcntl --enable-sockets --with-xmlrpc --enable-ftp --enable-intl --with-xsl \
     --with-gettext --enable-zip --enable-soap --disable-ipv6 --disable-debug && \
     make ZEND_EXTRA_LIBS='-liconv' && \
-    make install
-
-RUN cd php-$PHP_5_VERSION && \
+    make install && \
     /bin/cp php.ini-production $PHP_INSTALL_DIR/etc/php.ini && \
     /bin/cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && \
     chmod +x /etc/init.d/php-fpm && \
@@ -138,14 +136,13 @@ RUN sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
 
 # ending
-RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
-RUN rm -rf /tmp/*
+RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
+    rm -rf /tmp/*
 
 EXPOSE 80 443
 
 # Set the entrypoint script.
-ADD entrypoint.sh /entrypoint.sh
-# ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
 # Define the default command.
-# CMD ["nginx", "-g", "daemon off;"]
+CMD ["-c", "/usr/local/tengine/conf/nginx.conf"]
