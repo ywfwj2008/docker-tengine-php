@@ -25,8 +25,8 @@ RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-
     wget -c --no-check-certificate http://mirrors.linuxeye.com/oneinstack/src/fpm-race-condition.patch && \
     wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_5_VERSION.tar.gz
 
-ADD libiconv-glibc-2.16.patch /tmp
-ADD fpm-race-condition.patch /tmp
+ADD libiconv-glibc-2.16.patch /tmp/libiconv-glibc-2.16.patch
+ADD fpm-race-condition.patch /tmp/fpm-race-condition.patch
 
 RUN tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
     patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
