@@ -25,15 +25,15 @@ RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-
     wget -c --no-check-certificate http://mirrors.linuxeye.com/oneinstack/src/fpm-race-condition.patch && \
     wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_5_VERSION.tar.gz
 
-ADD libiconv-glibc-2.16.patch /tmp/libiconv-glibc-2.16.patch
-ADD fpm-race-condition.patch /tmp/fpm-race-condition.patch
-
+# install libiconv
+ADD ./patch/libiconv-glibc-2.16.patch /tmp/libiconv-glibc-2.16.patch
 RUN tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
     patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
     cd libiconv-$LIBICONV_VERSION && \
     ./configure --prefix=/usr/local && \
     make && make install
 
+# install libmcrypt
 RUN tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
     cd libmcrypt-$LIBMCRYPT_VERSION && \
     ./configure && \
@@ -43,21 +43,21 @@ RUN tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
     ./configure --enable-ltdl-install && \
     make && make install
 
+# install mhash
 RUN tar xzf mhash-$MHASH_VERSION.tar.gz && \
     cd mhash-$MHASH_VERSION && \
     ./configure && \
     make && make install
 
+# install mcrypt
 RUN tar xzf mcrypt-$MCRYPT_VERSION.tar.gz && \
     cd mcrypt-$MCRYPT_VERSION && \
     ldconfig && \
     ./configure && \
     make && make install
 
-RUN echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf && \
-    ldconfig
-
 # install php5
+ADD ./patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
 RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
     patch -d php-$PHP_5_VERSION -p0 < fpm-race-condition.patch && \
     cd php-$PHP_5_VERSION && \
@@ -77,7 +77,7 @@ RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
     chmod +x /etc/init.d/php-fpm && \
     update-rc.d php-fpm defaults
 
-# edit php-fpm.conf
+# add and edit php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
 RUN sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
     sed -i "s@^pm.start_servers.*@pm.start_servers = 40@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
@@ -104,9 +104,8 @@ RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPC
     cd zendopcache-$ZENDOPCACHE_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install
-
-RUN sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_DIR/etc/php.ini && \
+    make && make install && \
+    sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^;opcache.enable=.*@opcache.enable=1@' $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i "s@^;opcache.memory_consumption.*@opcache.memory_consumption=$MEMORY_LIMIT@" $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^;opcache.interned_strings_buffer.*@opcache.interned_strings_buffer=8@' $PHP_INSTALL_DIR/etc/php.ini && \
@@ -130,10 +129,11 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERS
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --with-imagick=/usr/local/imagemagick && \
-    make && make install
-
-RUN sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini && \
+    make && make install && \
+    sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini && \
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
+
+# install php-memcache and php-memcached
 
 # ending
 RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
