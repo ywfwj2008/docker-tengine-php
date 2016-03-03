@@ -7,8 +7,8 @@ ENV MHASH_VERSION=0.9.9.9
 ENV MCRYPT_VERSION=2.6.8
 ENV PHP_5_VERSION=5.5.32
 ENV ZENDOPCACHE_VERSION=7.0.5
-ENV IMAGEMAGICK_VERSION=6.8.8-10
-ENV IMAGICK_VERSION=3.3.0
+ENV IMAGEMAGICK_VERSION=6.9.3-5
+ENV IMAGICK_VERSION=3.4.0RC6
 ENV PHP_INSTALL_DIR=/usr/local/php
 ENV RUN_USER=www
 
@@ -88,10 +88,10 @@ RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPC
     make && make install
 
 # install ImageMagick
-RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/imagemagick/old-sources/6.x/6.8/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
+RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/imagemagick/6.9.3-sources/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
     tar xzf ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
     cd ImageMagick-$IMAGEMAGICK_VERSION && \
-    ./configure --prefix=/usr/local/imagemagick && \
+    ./configure --prefix=/usr/local/imagemagick --enable-shared --enable-static && \
     make && make install
 
 RUN wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERSION.tgz && \
