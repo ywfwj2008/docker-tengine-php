@@ -105,8 +105,8 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERS
 # install php-memcache and php-memcached
 
 # ending
-RUN ADD ./entrypoint.sh /entrypoint.sh && \
-    chmod 777 /entrypoint.sh && \
+ADD ./entrypoint.sh /entrypoint.sh
+RUN chmod 777 /entrypoint.sh && \
     echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
     rm -rf /tmp/*
 
