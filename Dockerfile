@@ -11,7 +11,6 @@ ENV IMAGEMAGICK_VERSION=6.8.8-10
 ENV IMAGICK_VERSION=3.3.0
 ENV PHP_INSTALL_DIR=/usr/local/php
 ENV RUN_USER=www
-ENV MEMORY_LIMIT=256
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev
@@ -79,24 +78,6 @@ RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
 
 # add and edit php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
-RUN sed -i "s@^pm.max_children.*@pm.max_children = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    sed -i "s@^pm.start_servers.*@pm.start_servers = 40@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    sed -i "s@^pm.min_spare_servers.*@pm.min_spare_servers = 30@" $PHP_INSTALL_DIR/etc/php-fpm.conf && \
-    sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 60@" $PHP_INSTALL_DIR/etc/php-fpm.conf
-
-# edit php.ini
-RUN sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^short_open_tag = Off@short_open_tag = On@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^expose_php = On@expose_php = Off@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^request_order.*@request_order = "CGP"@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;date.timezone.*@date.timezone = Asia/Shanghai@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^post_max_size.*@post_max_size = 100M@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 50M@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^max_execution_time.*@max_execution_time = 5@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' $PHP_INSTALL_DIR/etc/php.ini && \
-    [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini
 
 # install zendopcache
 RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPCACHE_VERSION.tgz && \
@@ -104,17 +85,7 @@ RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPC
     cd zendopcache-$ZENDOPCACHE_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install && \
-    sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.enable=.*@opcache.enable=1@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i "s@^;opcache.memory_consumption.*@opcache.memory_consumption=$MEMORY_LIMIT@" $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.interned_strings_buffer.*@opcache.interned_strings_buffer=8@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.max_accelerated_files.*@opcache.max_accelerated_files=4000@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.revalidate_freq.*@opcache.revalidate_freq=60@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.save_comments.*@opcache.save_comments=0@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.fast_shutdown.*@opcache.fast_shutdown=1@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.enable_cli.*@opcache.enable_cli=1@' $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^;opcache.optimization_level.*@;opcache.optimization_level=0@' $PHP_INSTALL_DIR/etc/php.ini
+    make && make install
 
 # install ImageMagick
 RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/imagemagick/old-sources/6.x/6.8/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
@@ -142,7 +113,9 @@ RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
 EXPOSE 80 443
 
 # Set the entrypoint script.
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+ADD ./entrypoint.sh /entrypoint.sh
+RUN chmod 777 /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Define the default command.
-CMD ["-c", "/usr/local/tengine/conf/nginx.conf"]
+CMD ["nginx", "-g", "daemon off;"]
