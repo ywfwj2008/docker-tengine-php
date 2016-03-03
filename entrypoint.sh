@@ -75,6 +75,12 @@ if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/opcache.so" ];then
     sed -i 's@^;opcache.optimization_level.*@;opcache.optimization_level=0@' $PHP_INSTALL_DIR/etc/php.ini
 fi
 
+# change php.ini about zendopcache
+if [ -f "`$php_install_dir/bin/php-config --extension-dir`/ImageMagick.so" ];then
+    sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
+    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
+fi
+
 service php-fpm start
 
 exec "$@"

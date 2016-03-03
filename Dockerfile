@@ -100,21 +100,19 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERS
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --with-imagick=/usr/local/imagemagick && \
-    make && make install && \
-    sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini && \
-    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
+    make && make install
 
 # install php-memcache and php-memcached
 
 # ending
-RUN echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
+RUN ADD ./entrypoint.sh /entrypoint.sh && \
+    chmod 777 /entrypoint.sh && \
+    echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
     rm -rf /tmp/*
 
 EXPOSE 80 443
 
 # Set the entrypoint script.
-ADD ./entrypoint.sh /entrypoint.sh
-RUN chmod 777 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Define the default command.
