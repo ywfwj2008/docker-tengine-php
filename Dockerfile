@@ -76,7 +76,7 @@ RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
     chmod +x /etc/init.d/php-fpm && \
     update-rc.d php-fpm defaults
 
-# add and edit php-fpm.conf
+# add php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
 
 # install zendopcache
