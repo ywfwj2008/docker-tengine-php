@@ -29,6 +29,13 @@ RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-
     ./configure --prefix=/usr/local && \
     make && make install
 
+# install mhash
+RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mhash/mhash/$MHASH_VERSION/mhash-$MHASH_VERSION.tar.gz && \
+    tar xzf mhash-$MHASH_VERSION.tar.gz && \
+    cd mhash-$MHASH_VERSION && \
+    ./configure && \
+    make && make install
+
 # install libmcrypt
 RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/$LIBMCRYPT_VERSION/libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
     tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
@@ -45,13 +52,6 @@ RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcry
     tar xzf mcrypt-$MCRYPT_VERSION.tar.gz && \
     cd mcrypt-$MCRYPT_VERSION && \
     ldconfig && \
-    ./configure && \
-    make && make install
-
-# install mhash
-RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mhash/mhash/$MHASH_VERSION/mhash-$MHASH_VERSION.tar.gz && \
-    tar xzf mhash-$MHASH_VERSION.tar.gz && \
-    cd mhash-$MHASH_VERSION && \
     ./configure && \
     make && make install
 
