@@ -16,27 +16,22 @@ ENV LIBMEMCACHED_VERSION=1.0.18
 ENV MEMCACHED_PECL_VERSION=2.2.0
 
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev
+    apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev libsasl2-dev
 
 WORKDIR /tmp
 
-RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-$LIBICONV_VERSION.tar.gz && \
-    wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/$LIBMCRYPT_VERSION/libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
-    wget -c --no-check-certificate http://downloads.sourceforge.net/project/mhash/mhash/$MHASH_VERSION/mhash-$MHASH_VERSION.tar.gz && \
-    wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/MCrypt/$MCRYPT_VERSION/mcrypt-$MCRYPT_VERSION.tar.gz && \
-    wget -c --no-check-certificate http://mirrors.linuxeye.com/oneinstack/src/fpm-race-condition.patch && \
-    wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_5_VERSION.tar.gz
-
 # install libiconv
 ADD ./patch/libiconv-glibc-2.16.patch /tmp/libiconv-glibc-2.16.patch
-RUN tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
+RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-$LIBICONV_VERSION.tar.gz && \
+    tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
     patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
     cd libiconv-$LIBICONV_VERSION && \
     ./configure --prefix=/usr/local && \
     make && make install
 
 # install libmcrypt
-RUN tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
+RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/$LIBMCRYPT_VERSION/libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
+    tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
     cd libmcrypt-$LIBMCRYPT_VERSION && \
     ./configure && \
     make && make install && \
@@ -45,22 +40,25 @@ RUN tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
     ./configure --enable-ltdl-install && \
     make && make install
 
-# install mhash
-RUN tar xzf mhash-$MHASH_VERSION.tar.gz && \
-    cd mhash-$MHASH_VERSION && \
-    ./configure && \
-    make && make install
-
 # install mcrypt
-RUN tar xzf mcrypt-$MCRYPT_VERSION.tar.gz && \
+RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/MCrypt/$MCRYPT_VERSION/mcrypt-$MCRYPT_VERSION.tar.gz && \
+    tar xzf mcrypt-$MCRYPT_VERSION.tar.gz && \
     cd mcrypt-$MCRYPT_VERSION && \
     ldconfig && \
     ./configure && \
     make && make install
 
+# install mhash
+RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mhash/mhash/$MHASH_VERSION/mhash-$MHASH_VERSION.tar.gz && \
+    tar xzf mhash-$MHASH_VERSION.tar.gz && \
+    cd mhash-$MHASH_VERSION && \
+    ./configure && \
+    make && make install
+
 # install php5
 ADD ./patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
-RUN tar xzf php-$PHP_5_VERSION.tar.gz && \
+RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_5_VERSION.tar.gz && \
+    tar xzf php-$PHP_5_VERSION.tar.gz && \
     patch -d php-$PHP_5_VERSION -p0 < fpm-race-condition.patch && \
     cd php-$PHP_5_VERSION && \
     ./configure --prefix=$PHP_INSTALL_DIR --with-config-file-path=$PHP_INSTALL_DIR/etc \
@@ -95,9 +93,9 @@ RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/imag
     tar xzf ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
     cd ImageMagick-$IMAGEMAGICK_VERSION && \
     ./configure --prefix=/usr/local/imagemagick --enable-shared --enable-static && \
-    make && make install
-
-RUN wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERSION.tgz && \
+    make && make install && \
+    cd .. && \
+    wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERSION.tgz && \
     tar xzf imagick-$IMAGICK_VERSION.tgz && \
     cd imagick-$IMAGICK_VERSION && \
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig && \
@@ -110,7 +108,7 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/memcache-$MEMCACHE_PE
     tar xzf memcache-$MEMCACHE_PECL_VERSION.tgz && \
     cd memcache-$MEMCACHE_PECL_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
-    ./configure --with-php-config=$php_install_dir/bin/php-config && \
+    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
     make && make install
 
 # install php-memcached
@@ -119,9 +117,9 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/$LIBME
     cd libmemcached-$LIBMEMCACHED_VERSION && \
     sed -i "s@lthread -pthread -pthreads@lthread -lpthread -pthreads@" ./configure && \
     ./configure && \
-    make && make install
-
-RUN wget -c --no-check-certificate http://pecl.php.net/get/memcached-$MEMCACHED_PECL_VERSION.tgz && \
+    make && make install && \
+    cd .. && \
+    wget -c --no-check-certificate http://pecl.php.net/get/memcached-$MEMCACHED_PECL_VERSION.tgz && \
     tar xzf memcached-$MEMCACHED_PECL_VERSION.tgz && \
     cd memcached-$MEMCACHED_PECL_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
