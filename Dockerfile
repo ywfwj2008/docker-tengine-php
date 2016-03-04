@@ -1,16 +1,19 @@
 FROM ywfwj2008/tengine:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
+ENV PHP_INSTALL_DIR=/usr/local/php
+ENV RUN_USER=www
 ENV LIBICONV_VERSION=1.14
 ENV LIBMCRYPT_VERSION=2.5.8
 ENV MHASH_VERSION=0.9.9.9
 ENV MCRYPT_VERSION=2.6.8
-ENV PHP_5_VERSION=5.5.32
+ENV PHP_5_VERSION=5.5.33
 ENV ZENDOPCACHE_VERSION=7.0.5
 ENV IMAGEMAGICK_VERSION=6.9.3-5
 ENV IMAGICK_VERSION=3.4.0RC6
-ENV PHP_INSTALL_DIR=/usr/local/php
-ENV RUN_USER=www
+ENV MEMCACHE_PECL_VERSION=3.0.8
+ENV LIBMEMCACHED_VERSION=1.0.18
+ENV MEMCACHED_PECL_VERSION=2.2.0
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev
@@ -102,7 +105,28 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERS
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --with-imagick=/usr/local/imagemagick && \
     make && make install
 
-# install php-memcache and php-memcached
+# install php-memcache
+RUN wget -c --no-check-certificate http://pecl.php.net/get/memcache-$MEMCACHE_PECL_VERSION.tgz && \
+    tar xzf memcache-$MEMCACHE_PECL_VERSION.tgz && \
+    cd memcache-$MEMCACHE_PECL_VERSION && \
+    $PHP_INSTALL_DIR/bin/phpize && \
+    ./configure --with-php-config=$php_install_dir/bin/php-config && \
+    make && make install
+
+# install php-memcached
+RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/$LIBMEMCACHED_VERSION/+download/libmemcached-$LIBMEMCACHED_VERSION.tar.gz && \
+    tar xzf libmemcached-$LIBMEMCACHED_VERSION.tar.gz && \
+    cd libmemcached-$LIBMEMCACHED_VERSION && \
+    sed -i "s@lthread -pthread -pthreads@lthread -lpthread -pthreads@" ./configure && \
+    ./configure && \
+    make && make install
+
+RUN wget -c --no-check-certificate http://pecl.php.net/get/memcached-$MEMCACHED_PECL_VERSION.tgz && \
+    tar xzf memcached-$MEMCACHED_PECL_VERSION.tgz && \
+    cd memcached-$MEMCACHED_PECL_VERSION && \
+    $PHP_INSTALL_DIR/bin/phpize && \
+    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
+    make && make install
 
 # ending
 ADD ./entrypoint.sh /entrypoint.sh

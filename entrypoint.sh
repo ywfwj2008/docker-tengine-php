@@ -75,10 +75,22 @@ if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/opcache.so" ];then
     sed -i 's@^;opcache.optimization_level.*@;opcache.optimization_level=0@' $PHP_INSTALL_DIR/etc/php.ini
 fi
 
-# change php.ini about zendopcache
+# change php.ini about imagick
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/imagick.so" ];then
     sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
+fi
+
+# change php.ini about memcache
+if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/memcache.so" ];then
+    sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
+    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "memcache.so"@' $PHP_INSTALL_DIR/etc/php.ini
+fi
+
+# change php.ini about memcached
+if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/memcached.so" ];then
+    sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
+    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "memcached.so"\nmemcached.use_sasl = 1@' $PHP_INSTALL_DIR/etc/php.ini
 fi
 
 service php-fpm start
