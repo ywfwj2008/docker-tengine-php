@@ -14,6 +14,7 @@ ENV IMAGICK_VERSION=3.4.0RC6
 ENV MEMCACHE_PECL_VERSION=3.0.8
 ENV LIBMEMCACHED_VERSION=1.0.18
 ENV MEMCACHED_PECL_VERSION=2.2.0
+ENV REDIS_PECL_VERSION=2.2.7
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev libsasl2-dev
@@ -122,6 +123,14 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/$LIBME
     wget -c --no-check-certificate http://pecl.php.net/get/memcached-$MEMCACHED_PECL_VERSION.tgz && \
     tar xzf memcached-$MEMCACHED_PECL_VERSION.tgz && \
     cd memcached-$MEMCACHED_PECL_VERSION && \
+    $PHP_INSTALL_DIR/bin/phpize && \
+    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
+    make && make install
+
+#install php-redis
+RUN wget -c --no-check-certificate http://pecl.php.net/get/redis-$REDIS_PECL_VERSION.tgz && \
+    tar xzf redis-$REDIS_PECL_VERSION.tgz && \
+    cd redis-$REDIS_PECL_VERSION.tgz && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
     make && make install

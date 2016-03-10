@@ -93,6 +93,12 @@ if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/memcached.so" ];then
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "memcached.so"\nmemcached.use_sasl = 1@' $PHP_INSTALL_DIR/etc/php.ini
 fi
 
+# change php.ini about redis
+if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/redis.so" ];then
+    sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
+    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "redis.so"@' $PHP_INSTALL_DIR/etc/php.ini
+fi
+
 service php-fpm start
 
 exec "$@"
