@@ -130,7 +130,7 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/$LIBME
 #install php-redis
 RUN wget -c --no-check-certificate http://pecl.php.net/get/redis-$REDIS_PECL_VERSION.tgz && \
     tar xzf redis-$REDIS_PECL_VERSION.tgz && \
-    cd redis-$REDIS_PECL_VERSION.tgz && \
+    cd redis-$REDIS_PECL_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
     make && make install
