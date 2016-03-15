@@ -90,7 +90,7 @@ RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPC
     make && make install
 
 # install ImageMagick
-RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/imagemagick/6.9.3-sources/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
+RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
     tar xzf ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
     cd ImageMagick-$IMAGEMAGICK_VERSION && \
     ./configure --prefix=/usr/local/imagemagick --enable-shared --enable-static && \
@@ -135,15 +135,19 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/redis-$REDIS_PECL_VER
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
     make && make install
 
-# ending
-ADD ./entrypoint.sh /entrypoint.sh
-RUN chmod 777 /entrypoint.sh && \
+# run install script
+ADD ./install.sh /tmp/install.sh
+RUN chmod 777 install.sh && \
+    bash install.sh && \
     echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
     rm -rf /tmp/*
 
+# expose port
 EXPOSE 80 443
 
 # Set the entrypoint script.
+ADD ./entrypoint.sh /entrypoint.sh
+RUN chmod 777 /entrypoint.sh && \
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Define the default command.
