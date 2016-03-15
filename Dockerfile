@@ -147,7 +147,7 @@ EXPOSE 80 443
 
 # Set the entrypoint script.
 ADD ./entrypoint.sh /entrypoint.sh
-RUN chmod 777 /entrypoint.sh && \
+RUN chmod 777 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Define the default command.
