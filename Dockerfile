@@ -28,14 +28,16 @@ RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-
     patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
     cd libiconv-$LIBICONV_VERSION && \
     ./configure --prefix=/usr/local && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # install mhash
 RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mhash/mhash/$MHASH_VERSION/mhash-$MHASH_VERSION.tar.gz && \
     tar xzf mhash-$MHASH_VERSION.tar.gz && \
     cd mhash-$MHASH_VERSION && \
     ./configure && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # install libmcrypt
 RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/$LIBMCRYPT_VERSION/libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
@@ -46,7 +48,8 @@ RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcry
     ldconfig && \
     cd libltdl && \
     ./configure --enable-ltdl-install && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # install mcrypt
 RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/MCrypt/$MCRYPT_VERSION/mcrypt-$MCRYPT_VERSION.tar.gz && \
@@ -54,7 +57,8 @@ RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcry
     cd mcrypt-$MCRYPT_VERSION && \
     ldconfig && \
     ./configure && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # install php5
 ADD ./patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
@@ -76,7 +80,8 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_5_V
     /bin/cp php.ini-production $PHP_INSTALL_DIR/etc/php.ini && \
     /bin/cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && \
     chmod +x /etc/init.d/php-fpm && \
-    update-rc.d php-fpm defaults
+    update-rc.d php-fpm defaults && \
+    rm -rf /tmp/*
 
 # add php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
@@ -87,7 +92,8 @@ RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPC
     cd zendopcache-$ZENDOPCACHE_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # install ImageMagick
 RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
@@ -102,7 +108,8 @@ RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagi
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --with-imagick=/usr/local/imagemagick && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # install php-memcache
 RUN wget -c --no-check-certificate http://pecl.php.net/get/memcache-$MEMCACHE_PECL_VERSION.tgz && \
@@ -110,7 +117,8 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/memcache-$MEMCACHE_PE
     cd memcache-$MEMCACHE_PECL_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # install php-memcached
 RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/$LIBMEMCACHED_VERSION/+download/libmemcached-$LIBMEMCACHED_VERSION.tar.gz && \
@@ -125,7 +133,8 @@ RUN wget -c --no-check-certificate https://launchpad.net/libmemcached/1.0/$LIBME
     cd memcached-$MEMCACHED_PECL_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 #install php-redis
 RUN wget -c --no-check-certificate http://pecl.php.net/get/redis-$REDIS_PECL_VERSION.tgz && \
@@ -133,14 +142,14 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/redis-$REDIS_PECL_VER
     cd redis-$REDIS_PECL_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install
+    make && make install && \
+    rm -rf /tmp/*
 
 # run install script
 ADD ./install.sh /tmp/install.sh
 RUN chmod 777 install.sh && \
     bash install.sh && \
-    echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php && \
-    rm -rf /tmp/*
+    echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
 
 # expose port
 EXPOSE 80 443
