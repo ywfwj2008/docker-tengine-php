@@ -49,3 +49,8 @@ fi
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/redis.so" ];then
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "redis.so"@' $PHP_INSTALL_DIR/etc/php.ini
 fi
+
+# change php.ini about swoole
+if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/swoole.so" ];then
+    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "swoole.so"@' $PHP_INSTALL_DIR/etc/php.ini
+fi
