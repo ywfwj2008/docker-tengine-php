@@ -151,7 +151,7 @@ RUN wget -c --no-check-certificate https://github.com/swoole/swoole-src/archive/
     tar xzf swoole-$SWOOLE_VERSION-stable.tar.gz && \
     cd swoole-src-swoole-$SWOOLE_VERSION-stable && \
     $PHP_INSTALL_DIR/bin/phpize && \
-    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --enable-async-mysql && \
+    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --enable-async-mysql --enable-jemalloc && \
     make && make install && \
     rm -rf /tmp/*
 
