@@ -15,7 +15,7 @@ ENV MEMCACHE_PECL_VERSION=3.0.8
 ENV LIBMEMCACHED_VERSION=1.0.18
 ENV MEMCACHED_PECL_VERSION=2.2.0
 ENV REDIS_PECL_VERSION=2.2.7
-ENV SWOOLE_VERSION=1.8.3
+ENV SWOOLE_VERSION=1.8.4
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev libsasl2-dev
