@@ -82,6 +82,7 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_5_V
     /bin/cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && \
     chmod +x /etc/init.d/php-fpm && \
     update-rc.d php-fpm defaults && \
+    ln -s $PHP_INSTALL_DIR/bin/php /usr/local/bin/php && \
     rm -rf /tmp/*
 
 # add php-fpm.conf
