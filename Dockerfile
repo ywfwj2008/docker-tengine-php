@@ -162,6 +162,11 @@ RUN chmod 777 install.sh && \
     bash install.sh && \
     echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
 
+# install composer
+RUN curl -sS https://getcomposer.org/installer | $PHP_INSTALL_DIR/bin/php && \
+    mv composer.phar /usr/local/bin/composer && \
+    chmod a+x /usr/local/bin/composer
+
 # expose port
 EXPOSE 80 443
 
