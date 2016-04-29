@@ -7,7 +7,7 @@ ENV LIBICONV_VERSION=1.14
 ENV LIBMCRYPT_VERSION=2.5.8
 ENV MHASH_VERSION=0.9.9.9
 ENV MCRYPT_VERSION=2.6.8
-ENV PHP_5_VERSION=5.5.34
+ENV PHP_VERSION=5.5.35
 ENV ZENDOPCACHE_VERSION=7.0.5
 ENV IMAGEMAGICK_VERSION=6.9.3-8
 ENV IMAGICK_VERSION=3.4.1
@@ -64,10 +64,10 @@ RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcry
 
 # install php5
 ADD ./patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
-RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_5_VERSION.tar.gz && \
-    tar xzf php-$PHP_5_VERSION.tar.gz && \
-    patch -d php-$PHP_5_VERSION -p0 < fpm-race-condition.patch && \
-    cd php-$PHP_5_VERSION && \
+RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
+    tar xzf php-$PHP_VERSION.tar.gz && \
+    patch -d php-$PHP_VERSION -p0 < fpm-race-condition.patch && \
+    cd php-$PHP_VERSION && \
     ./configure --prefix=$PHP_INSTALL_DIR --with-config-file-path=$PHP_INSTALL_DIR/etc \
     --with-fpm-user=$RUN_USER --with-fpm-group=$RUN_USER --enable-fpm --enable-opcache --disable-fileinfo \
     --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
