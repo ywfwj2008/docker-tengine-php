@@ -1,21 +1,21 @@
 FROM ywfwj2008/tengine:latest
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
-ENV PHP_INSTALL_DIR=/usr/local/php
-ENV RUN_USER=www
-ENV LIBICONV_VERSION=1.14
-ENV LIBMCRYPT_VERSION=2.5.8
-ENV MHASH_VERSION=0.9.9.9
-ENV MCRYPT_VERSION=2.6.8
-ENV PHP_VERSION=5.5.35
-ENV ZENDOPCACHE_VERSION=7.0.5
-ENV IMAGEMAGICK_VERSION=7.0.1-3
-ENV IMAGICK_VERSION=3.4.2
-ENV MEMCACHE_PECL_VERSION=3.0.8
-ENV LIBMEMCACHED_VERSION=1.0.18
-ENV MEMCACHED_PECL_VERSION=2.2.0
-ENV REDIS_PECL_VERSION=2.2.7
-ENV SWOOLE_VERSION=1.8.5
+ENV PHP_INSTALL_DIR=/usr/local/php \
+    RUN_USER=www \
+    LIBICONV_VERSION=1.14 \
+    LIBMCRYPT_VERSION=2.5.8 \
+    MHASH_VERSION=0.9.9.9 \
+    MCRYPT_VERSION=2.6.8 \
+    PHP_VERSION=5.5.35 \
+    ZENDOPCACHE_VERSION=7.0.5 \
+    #IMAGEMAGICK_VERSION=7.0.1-5 \
+    IMAGICK_VERSION=3.4.2 \
+    MEMCACHE_PECL_VERSION=3.0.8 \
+    LIBMEMCACHED_VERSION=1.0.18 \
+    MEMCACHED_PECL_VERSION=2.2.0 \
+    REDIS_PECL_VERSION=2.2.7 \
+    SWOOLE_VERSION=1.8.5
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev libsasl2-dev  && \
@@ -99,9 +99,9 @@ RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPC
     rm -rf /tmp/*
 
 # install ImageMagick
-RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
-    tar xzf ImageMagick-$IMAGEMAGICK_VERSION.tar.gz && \
-    cd ImageMagick-$IMAGEMAGICK_VERSION && \
+RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagick.tar.gz && \
+    tar xzf ImageMagick.tar.gz && \
+    cd ImageMagick* && \
     ./configure --prefix=/usr/local/imagemagick --enable-shared --enable-static && \
     make && make install && \
     cd .. && \
