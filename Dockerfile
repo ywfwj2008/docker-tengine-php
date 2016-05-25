@@ -9,7 +9,6 @@ ENV PHP_INSTALL_DIR=/usr/local/php \
     MCRYPT_VERSION=2.6.8 \
     PHP_VERSION=5.5.35 \
     ZENDOPCACHE_VERSION=7.0.5 \
-    #IMAGEMAGICK_VERSION=7.0.1-5 \
     IMAGICK_VERSION=3.4.2 \
     MEMCACHE_PECL_VERSION=3.0.8 \
     LIBMEMCACHED_VERSION=1.0.18 \
@@ -161,12 +160,14 @@ RUN wget -c --no-check-certificate https://github.com/swoole/swoole-src/archive/
 ADD ./install.sh /tmp/install.sh
 RUN chmod 777 install.sh && \
     bash install.sh && \
-    echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
+    unlink install.sh
 
 # install composer
 RUN curl -sS https://getcomposer.org/installer | $PHP_INSTALL_DIR/bin/php && \
     mv composer.phar /usr/local/bin/composer && \
     chmod a+x /usr/local/bin/composer
+
+WORKDIR /home/wwwroot
 
 # expose port
 EXPOSE 80 443
