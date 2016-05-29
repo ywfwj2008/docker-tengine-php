@@ -15,7 +15,7 @@ sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,c
 [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini
 
 # change php.ini about zendopcache
-if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/opcache.so" ];then
+if [ 1 == 1 ];then
     sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_DIR/etc/php.ini
     sed -i 's@^;opcache.enable=.*@opcache.enable=1@' $PHP_INSTALL_DIR/etc/php.ini
     sed -i "s@^;opcache.memory_consumption@opcache.memory_consumption@" $PHP_INSTALL_DIR/etc/php.ini

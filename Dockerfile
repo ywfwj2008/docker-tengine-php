@@ -7,8 +7,7 @@ ENV PHP_INSTALL_DIR=/usr/local/php \
     LIBMCRYPT_VERSION=2.5.8 \
     MHASH_VERSION=0.9.9.9 \
     MCRYPT_VERSION=2.6.8 \
-    PHP_VERSION=5.5.36 \
-    ZENDOPCACHE_VERSION=7.0.5 \
+    PHP_VERSION=5.6.22 \
     IMAGICK_VERSION=3.4.2 \
     MEMCACHE_PECL_VERSION=3.0.8 \
     LIBMEMCACHED_VERSION=1.0.18 \
@@ -61,11 +60,9 @@ RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcry
     make && make install && \
     rm -rf /tmp/*
 
-# install php5
-ADD ./patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
+# install php5.6
 RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
     tar xzf php-$PHP_VERSION.tar.gz && \
-    patch -d php-$PHP_VERSION -p0 < fpm-race-condition.patch && \
     cd php-$PHP_VERSION && \
     ./configure --prefix=$PHP_INSTALL_DIR --with-config-file-path=$PHP_INSTALL_DIR/etc \
     --with-fpm-user=$RUN_USER --with-fpm-group=$RUN_USER --enable-fpm --enable-opcache \
@@ -87,15 +84,6 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VER
 
 # add php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
-
-# install zendopcache
-RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPCACHE_VERSION.tgz && \
-    tar xzf zendopcache-$ZENDOPCACHE_VERSION.tgz && \
-    cd zendopcache-$ZENDOPCACHE_VERSION && \
-    $PHP_INSTALL_DIR/bin/phpize && \
-    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install && \
-    rm -rf /tmp/*
 
 # install ImageMagick
 RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagick.tar.gz && \
