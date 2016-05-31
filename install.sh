@@ -55,6 +55,21 @@ if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/swoole.so" ];then
     sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "swoole.so"@' $PHP_INSTALL_DIR/etc/php.ini
 fi
 
+# install ZendGuardLoader
+wget -c http://mirrors.linuxeye.com/oneinstack/src/zend-loader-php5.6-linux-x86_64.tar.gz -P /tmp
+tar xzf zend-loader-php5.6-linux-x86_64.tar.gz
+/bin/cp zend-loader-php5.6-linux-x86_64/ZendGuardLoader.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
+rm -rf /tmp/*
+if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ZendGuardLoader.so" ];then
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-zendGuardLoader.ini << EOF
+[Zend Guard Loader]
+zend_extension=`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ZendGuardLoader.so
+zend_loader.enable=1
+zend_loader.disable_licensing=0
+zend_loader.obfuscation_level_support=3
+EOF
+fi
+
 # white default index.html
 echo "Hello World!" > /home/wwwroot/default/index.html
 echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php

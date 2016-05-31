@@ -65,6 +65,7 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VER
     tar xzf php-$PHP_VERSION.tar.gz && \
     cd php-$PHP_VERSION && \
     ./configure --prefix=$PHP_INSTALL_DIR --with-config-file-path=$PHP_INSTALL_DIR/etc \
+    --with-config-file-scan-dir=$PHP_INSTALL_DIR/etc/php.d \
     --with-fpm-user=$RUN_USER --with-fpm-group=$RUN_USER --enable-fpm --enable-opcache \
     --with-mysql=mysqlnd --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd \
     --with-iconv-dir=/usr/local --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib \
