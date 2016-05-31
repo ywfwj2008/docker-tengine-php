@@ -57,9 +57,8 @@ fi
 
 # install ZendGuardLoader
 wget -c http://mirrors.linuxeye.com/oneinstack/src/zend-loader-php5.6-linux-x86_64.tar.gz -P /tmp
-tar xzf zend-loader-php5.6-linux-x86_64.tar.gz
-/bin/cp zend-loader-php5.6-linux-x86_64/ZendGuardLoader.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
-rm -rf /tmp/*
+tar xzf /tmp/zend-loader-php5.6-linux-x86_64.tar.gz
+cp /tmp/zend-loader-php5.6-linux-x86_64/ZendGuardLoader.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ZendGuardLoader.so" ];then
     cat > $PHP_INSTALL_DIR/etc/php.d/ext-zendGuardLoader.ini << EOF
 [Zend Guard Loader]

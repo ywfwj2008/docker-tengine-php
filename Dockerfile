@@ -149,7 +149,7 @@ RUN wget -c --no-check-certificate https://github.com/swoole/swoole-src/archive/
 ADD ./install.sh /tmp/install.sh
 RUN chmod 777 install.sh && \
     bash install.sh && \
-    unlink install.sh
+    rm -rf /tmp/*
 
 # install composer
 RUN curl -sS https://getcomposer.org/installer | $PHP_INSTALL_DIR/bin/php && \
