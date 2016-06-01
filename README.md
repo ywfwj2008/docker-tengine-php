@@ -8,7 +8,7 @@ docker run --name mysql \
            -v /my/custom:/etc/mysql/conf.d \
            -v /home/mysql:/var/lib/mysql \
            -e MYSQL_ROOT_PASSWORD=my-secret-pw \
-           -d mysql
+           -d mysql:5.6
 ```
 
 ```
