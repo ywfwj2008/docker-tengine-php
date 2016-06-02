@@ -76,6 +76,7 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VER
     --with-gettext --enable-zip --enable-soap --disable-ipv6 --disable-debug && \
     make ZEND_EXTRA_LIBS='-liconv' && \
     make install && \
+    mkdir -p $PHP_INSTALL_DIR/etc/php.d && \
     /bin/cp php.ini-production $PHP_INSTALL_DIR/etc/php.ini && \
     /bin/cp sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm && \
     chmod +x /etc/init.d/php-fpm && \
