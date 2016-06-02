@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # optimize php.ini
-# sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR/etc/php.ini
+sed -i "s@^memory_limit.*@memory_limit = 192M@" $PHP_INSTALL_DIR/etc/php.ini
 sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' $PHP_INSTALL_DIR/etc/php.ini
 sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' $PHP_INSTALL_DIR/etc/php.ini
 sed -i 's@^short_open_tag = Off@short_open_tag = On@' $PHP_INSTALL_DIR/etc/php.ini
@@ -16,16 +16,19 @@ sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,c
 
 # change php.ini about zendopcache
 if [ 1 == 1 ];then
-    sed -i 's@^\[opcache\]@[opcache]\nzend_extension=opcache.so@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.enable=.*@opcache.enable=1@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i "s@^;opcache.memory_consumption@opcache.memory_consumption@" $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.interned_strings_buffer.*@opcache.interned_strings_buffer=8@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.max_accelerated_files.*@opcache.max_accelerated_files=4000@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.revalidate_freq.*@opcache.revalidate_freq=60@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.save_comments.*@opcache.save_comments=0@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.fast_shutdown.*@opcache.fast_shutdown=1@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.enable_cli.*@opcache.enable_cli=1@' $PHP_INSTALL_DIR/etc/php.ini
-    sed -i 's@^;opcache.optimization_level.*@;opcache.optimization_level=0@' $PHP_INSTALL_DIR/etc/php.ini
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini << EOF
+[opcache]
+zend_extension=opcache.so
+opcache.enable=1
+opcache.memory_consumption=192
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=4000
+opcache.revalidate_freq=60
+opcache.save_comments=0
+opcache.fast_shutdown=1
+opcache.enable_cli=1
+;opcache.optimization_level=0
+EOF
 fi
 
 sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
