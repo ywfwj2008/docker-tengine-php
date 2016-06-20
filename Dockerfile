@@ -13,7 +13,7 @@ ENV PHP_INSTALL_DIR=/usr/local/php \
     LIBMEMCACHED_VERSION=1.0.18 \
     MEMCACHED_PECL_VERSION=2.2.0 \
     REDIS_PECL_VERSION=2.2.8 \
-    SWOOLE_VERSION=1.8.5
+    SWOOLE_VERSION=1.8.6
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev libsasl2-dev  && \
