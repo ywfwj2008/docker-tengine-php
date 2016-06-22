@@ -139,7 +139,7 @@ RUN wget -c --no-check-certificate http://pecl.php.net/get/redis-$REDIS_PECL_VER
 
 # install swoole
 RUN wget -c --no-check-certificate https://github.com/swoole/swoole-src/archive/$SWOOLE_VERSION-stable.tar.gz && \
-    tar xzf swoole-$SWOOLE_VERSION-stable.tar.gz && \
+    tar xzf $SWOOLE_VERSION-stable.tar.gz && \
     cd swoole-src-swoole-$SWOOLE_VERSION-stable && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --enable-async-mysql --enable-jemalloc && \
