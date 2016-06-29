@@ -72,6 +72,17 @@ zend_loader.obfuscation_level_support=3
 EOF
 fi
 
+# install ioncube
+wget -c http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz -P /tmp
+tar xzf /tmp/ioncube_loaders_lin_x86-64.tar.gz
+cp /tmp/ioncube/ioncube_loader_lin_5.6.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
+if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ioncube_loader_lin_5.6.so" ];then
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-ioncube.ini << EOF
+[ionCube Loader]
+zend_extension=`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ioncube_loader_lin_5.6.so
+EOF
+fi
+
 # white default index.html
 echo "Hello World!" > /home/wwwroot/default/index.html
 echo "<?php phpinfo();" > /home/wwwroot/default/phpinfo.php
