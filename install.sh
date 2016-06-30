@@ -35,27 +35,38 @@ sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$P
 
 # change php.ini about imagick
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/imagick.so" ];then
-    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "imagick.so"@' $PHP_INSTALL_DIR/etc/php.ini
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-imagick.ini << EOF
+extension=imagick.so
+EOF
 fi
 
 # change php.ini about memcache
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/memcache.so" ];then
-    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "memcache.so"@' $PHP_INSTALL_DIR/etc/php.ini
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-memcache.ini << EOF
+extension=memcache.so
+EOF
 fi
 
 # change php.ini about memcached
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/memcached.so" ];then
-    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "memcached.so"\nmemcached.use_sasl = 1@' $PHP_INSTALL_DIR/etc/php.ini
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-memcached.ini << EOF
+extension=memcached.so
+memcached.use_sasl=1
+EOF
 fi
 
 # change php.ini about redis
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/redis.so" ];then
-    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "redis.so"@' $PHP_INSTALL_DIR/etc/php.ini
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-redis.ini << EOF
+extension=redis.so
+EOF
 fi
 
 # change php.ini about swoole
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/swoole.so" ];then
-    sed -i 's@^extension_dir\(.*\)@extension_dir\1\nextension = "swoole.so"@' $PHP_INSTALL_DIR/etc/php.ini
+    cat > $PHP_INSTALL_DIR/etc/php.d/ext-swoole.ini << EOF
+extension=swoole.so
+EOF
 fi
 
 # install ZendGuardLoader
