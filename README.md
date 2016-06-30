@@ -1,5 +1,9 @@
 # docker-tengine-php
 
+    Tengine + PHP + ImageMagick + ZendOpcache
+    Memcache + Memcached + Redis + Swoole
+    ZendGuardLoader + ionCube
+
 ## usage
 
 ### wish mysql
