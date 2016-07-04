@@ -22,7 +22,7 @@ docker run --name web \
            -v /home/wwwlogs:/home/wwwlogs \
            -v /home/wwwroot:/home/wwwroot \
            -p 80:80 -p 443:443 \
-           -d ywfwj2008/tengine-php
+           -d ywfwj2008/tengine-php:5.5
 ```
 ### not with mysql
 ```
@@ -30,5 +30,5 @@ docker run --name web \
            -v /home/wwwlogs:/home/wwwlogs \
            -v /home/wwwroot:/home/wwwroot \
            -p 80:80 -p 443:443 \
-           -d ywfwj2008/tengine-php
+           -d ywfwj2008/tengine-php:5.5
 ```
