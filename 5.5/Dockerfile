@@ -23,7 +23,7 @@ RUN apt-get update && apt-get upgrade -y && \
 WORKDIR /tmp
 
 # install libiconv
-ADD ./patch/libiconv-glibc-2.16.patch /tmp/libiconv-glibc-2.16.patch
+ADD ../patch/libiconv-glibc-2.16.patch /tmp/libiconv-glibc-2.16.patch
 RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-$LIBICONV_VERSION.tar.gz && \
     tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
     patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
@@ -62,7 +62,7 @@ RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcry
     rm -rf /tmp/*
 
 # install php5
-ADD ./patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
+ADD ../patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
 RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
     tar xzf php-$PHP_VERSION.tar.gz && \
     patch -d php-$PHP_VERSION -p0 < fpm-race-condition.patch && \
