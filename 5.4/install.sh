@@ -71,9 +71,9 @@ EOF
 fi
 
 # install ZendGuardLoader
-wget -c http://mirrors.linuxeye.com/oneinstack/src/zend-loader-php5.5-linux-x86_64.tar.gz -P /tmp
-tar xzf /tmp/zend-loader-php5.5-linux-x86_64.tar.gz
-cp /tmp/zend-loader-php5.5-linux-x86_64/ZendGuardLoader.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
+wget -c http://mirrors.linuxeye.com/oneinstack/src/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-x86_64.tar.gz -P /tmp
+tar xzf /tmp/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-x86_64.tar.gz
+cp /tmp/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-x86_64/php-5.4.x/ZendGuardLoader.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ZendGuardLoader.so" ];then
     cat > $PHP_INSTALL_DIR/etc/php.d/ext-zendGuardLoader.ini << EOF
 [Zend Guard Loader]
@@ -87,11 +87,11 @@ fi
 # install ioncube
 wget -c http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz -P /tmp
 tar xzf /tmp/ioncube_loaders_lin_x86-64.tar.gz
-cp /tmp/ioncube/ioncube_loader_lin_5.5.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
-if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ioncube_loader_lin_5.5.so" ];then
+cp /tmp/ioncube/ioncube_loader_lin_5.4.so `$PHP_INSTALL_DIR/bin/php-config --extension-dir`
+if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ioncube_loader_lin_5.4.so" ];then
     cat > $PHP_INSTALL_DIR/etc/php.d/ext-ioncube.ini << EOF
 [ionCube Loader]
-zend_extension=`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ioncube_loader_lin_5.5.so
+zend_extension=`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/ioncube_loader_lin_5.4.so
 EOF
 fi
 
