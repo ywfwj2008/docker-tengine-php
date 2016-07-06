@@ -90,15 +90,6 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VER
 # add php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
 
-# install zendopcache
-RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPCACHE_VERSION.tgz && \
-    tar xzf zendopcache-$ZENDOPCACHE_VERSION.tgz && \
-    cd zendopcache-$ZENDOPCACHE_VERSION && \
-    $PHP_INSTALL_DIR/bin/phpize && \
-    ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
-    make && make install && \
-    rm -rf /tmp/*
-
 # install ImageMagick
 RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagick.tar.gz && \
     tar xzf ImageMagick.tar.gz && \

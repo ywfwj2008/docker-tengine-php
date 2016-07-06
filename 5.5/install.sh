@@ -16,7 +16,7 @@ sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,c
 
 # zendopcache
 # opcache.max_accelerated_files's value can be in {223,463,983,1979,3907,7963,16229,32521,65407,130987}
-if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/opcache.so" ];then
+if [ 1 == 1 ];then
     cat > $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini << EOF
 [opcache]
 zend_extension=opcache.so
