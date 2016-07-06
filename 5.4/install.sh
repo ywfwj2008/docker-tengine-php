@@ -19,7 +19,7 @@ sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,c
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/opcache.so" ];then
     cat > $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini << EOF
 [opcache]
-zend_extension=opcache.so
+zend_extension=`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/opcache.so
 opcache.enable=1
 opcache.memory_consumption=192
 opcache.interned_strings_buffer=16
