@@ -16,18 +16,6 @@ sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,c
 
 sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
 
-# apcu
-if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/apcu.so" ];then
-    cat > $PHP_INSTALL_DIR/etc/php.d/ext-apcu.ini << EOF
-[apcu]
-extension=apcu.so
-apc.enabled=1
-apc.shm_size=32M
-apc.ttl=7200
-apc.enable_cli=1
-EOF
-fi
-
 # imagick
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/imagick.so" ];then
     cat > $PHP_INSTALL_DIR/etc/php.d/ext-imagick.ini << EOF

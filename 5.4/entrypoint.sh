@@ -47,9 +47,8 @@ elif [ $Mem -gt 8500 ];then
     sed -i "s@^pm.max_spare_servers.*@pm.max_spare_servers = 80@" $PHP_INSTALL_DIR/etc/php-fpm.conf
 fi
 
-# optimize php.ini
+# optimize
 sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR/etc/php.ini
-sed -i "s@^opcache.memory_consumption.*@opcache.memory_consumption=$MEMORY_LIMIT@" $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini
 
 service php-fpm start
 
