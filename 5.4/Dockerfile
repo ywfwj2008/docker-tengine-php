@@ -9,6 +9,7 @@ ENV PHP_INSTALL_DIR=/usr/local/php \
     MCRYPT_VERSION=2.6.8 \
     PHP_VERSION=5.4.45 \
     ZENDOPCACHE_VERSION=7.0.5 \
+    APCU_VERSION=4.0.11 \
     IMAGICK_VERSION=3.4.3RC1 \
     MEMCACHE_PECL_VERSION=3.0.8 \
     LIBMEMCACHED_VERSION=1.0.18 \
@@ -91,9 +92,9 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VER
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
 
 # install zendopcache
-RUN wget -c --no-check-certificate https://pecl.php.net/get/zendopcache-$ZENDOPCACHE_VERSION.tgz && \
-    tar xzf zendopcache-$ZENDOPCACHE_VERSION.tgz && \
-    cd zendopcache-$ZENDOPCACHE_VERSION && \
+RUN wget -c --no-check-certificate https://pecl.php.net/get/apcu-$APCU_VERSION.tgz && \
+    tar xzf apcu-$APCU_VERSION.tgz && \
+    cd apcu-$APCU_VERSION && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config && \
     make && make install && \
