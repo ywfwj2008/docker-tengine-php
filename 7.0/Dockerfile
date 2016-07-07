@@ -21,46 +21,7 @@ RUN apt-get update && apt-get upgrade -y && \
 
 WORKDIR /tmp
 
-# install libiconv
-ADD ./patch/libiconv-glibc-2.16.patch /tmp/libiconv-glibc-2.16.patch
-RUN wget -c --no-check-certificate http://ftp.gnu.org/pub/gnu/libiconv/libiconv-$LIBICONV_VERSION.tar.gz && \
-    tar xzf libiconv-$LIBICONV_VERSION.tar.gz && \
-    patch -d libiconv-$LIBICONV_VERSION -p0 < libiconv-glibc-2.16.patch && \
-    cd libiconv-$LIBICONV_VERSION && \
-    ./configure --prefix=/usr/local && \
-    make && make install && \
-    rm -rf /tmp/*
-
-# install mhash
-RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mhash/mhash/$MHASH_VERSION/mhash-$MHASH_VERSION.tar.gz && \
-    tar xzf mhash-$MHASH_VERSION.tar.gz && \
-    cd mhash-$MHASH_VERSION && \
-    ./configure && \
-    make && make install && \
-    rm -rf /tmp/*
-
-# install libmcrypt
-RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/$LIBMCRYPT_VERSION/libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
-    tar xzf libmcrypt-$LIBMCRYPT_VERSION.tar.gz && \
-    cd libmcrypt-$LIBMCRYPT_VERSION && \
-    ./configure && \
-    make && make install && \
-    ldconfig && \
-    cd libltdl && \
-    ./configure --enable-ltdl-install && \
-    make && make install && \
-    rm -rf /tmp/*
-
-# install mcrypt
-RUN wget -c --no-check-certificate http://downloads.sourceforge.net/project/mcrypt/MCrypt/$MCRYPT_VERSION/mcrypt-$MCRYPT_VERSION.tar.gz && \
-    tar xzf mcrypt-$MCRYPT_VERSION.tar.gz && \
-    cd mcrypt-$MCRYPT_VERSION && \
-    ldconfig && \
-    ./configure && \
-    make && make install && \
-    rm -rf /tmp/*
-
-# install php5.6
+# install php
 RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
     tar xzf php-$PHP_VERSION.tar.gz && \
     cd php-$PHP_VERSION && \
