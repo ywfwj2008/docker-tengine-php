@@ -14,10 +14,11 @@ sed -i 's@^max_execution_time.*@max_execution_time = 5@' $PHP_INSTALL_DIR/etc/ph
 sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,popen@' $PHP_INSTALL_DIR/etc/php.ini
 [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' $PHP_INSTALL_DIR/etc/php.ini
 
+sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
+
 # zendopcache
 # opcache.max_accelerated_files's value can be in {223,463,983,1979,3907,7963,16229,32521,65407,130987}
-if [ 1 == 1 ];then
-    cat > $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini << EOF
+cat > $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini << EOF
 [opcache]
 zend_extension=opcache.so
 opcache.enable=1
@@ -30,9 +31,6 @@ opcache.fast_shutdown=1
 opcache.enable_cli=1
 ;opcache.optimization_level=0
 EOF
-fi
-
-sed -i "s@extension_dir = \"ext\"@extension_dir = \"ext\"\nextension_dir = \"`$PHP_INSTALL_DIR/bin/php-config --extension-dir`\"@" $PHP_INSTALL_DIR/etc/php.ini
 
 # imagick
 if [ -f "`$PHP_INSTALL_DIR/bin/php-config --extension-dir`/imagick.so" ];then

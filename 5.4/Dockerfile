@@ -91,7 +91,7 @@ RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VER
 # add php-fpm.conf
 ADD php-fpm.conf $PHP_INSTALL_DIR/etc/php-fpm.conf
 
-# install zendopcache
+# install apcu
 RUN wget -c --no-check-certificate https://pecl.php.net/get/apcu-$APCU_VERSION.tgz && \
     tar xzf apcu-$APCU_VERSION.tgz && \
     cd apcu-$APCU_VERSION && \
