@@ -18,9 +18,9 @@ RUN apt-get update && apt-get upgrade -y && \
 WORKDIR /tmp
 
 # install php
-ADD ./patch/fpm-race-condition.patch /tmp/fpm-race-condition.patch
 RUN wget -c --no-check-certificate http://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
     tar xzf php-$PHP_VERSION.tar.gz && \
+    wget -c --no-check-certificate http://mirrors.linuxeye.com/oneinstack/src/fpm-race-condition.patch && \
     patch -d php-$PHP_VERSION -p0 < fpm-race-condition.patch && \
     cd php-$PHP_VERSION && \
     ./configure --prefix=$PHP_INSTALL_DIR --with-config-file-path=$PHP_INSTALL_DIR/etc \
