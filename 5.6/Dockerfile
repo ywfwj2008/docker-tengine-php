@@ -3,8 +3,8 @@ MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV PHP_INSTALL_DIR=/usr/local/php \
     RUN_USER=www \
-    PHP_VERSION=5.6.22 \
-    IMAGICK_VERSION=3.4.3RC1 \
+    PHP_VERSION=5.6.23 \
+    IMAGICK_PECL_VERSION=3.4.3RC1 \
     MEMCACHE_PECL_VERSION=3.0.8 \
     LIBMEMCACHED_VERSION=1.0.18 \
     MEMCACHED_PECL_VERSION=2.2.0 \
@@ -51,9 +51,9 @@ RUN wget -c --no-check-certificate http://www.imagemagick.org/download/ImageMagi
     ./configure --prefix=/usr/local/imagemagick --enable-shared --enable-static && \
     make && make install && \
     cd .. && \
-    wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_VERSION.tgz && \
-    tar xzf imagick-$IMAGICK_VERSION.tgz && \
-    cd imagick-$IMAGICK_VERSION && \
+    wget -c --no-check-certificate http://pecl.php.net/get/imagick-$IMAGICK_PECL_VERSION.tgz && \
+    tar xzf imagick-$IMAGICK_PECL_VERSION.tgz && \
+    cd imagick-$IMAGICK_PECL_VERSION && \
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig && \
     $PHP_INSTALL_DIR/bin/phpize && \
     ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config --with-imagick=/usr/local/imagemagick && \
