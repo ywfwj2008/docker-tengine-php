@@ -32,3 +32,13 @@ docker run --name web \
            -p 80:80 -p 443:443 \
            -d ywfwj2008/tengine-php
 ```
+### nginx control
+start|stop|restart|force-reload|status|configtest|quietupgrade|terminate|destroy
+```
+docker exec -d web service nginx restart
+```
+### php control
+start|stop|force-quit|restart|reload|status
+```
+docker exec -d web service php restart
+```
