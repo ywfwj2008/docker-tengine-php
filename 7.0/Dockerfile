@@ -3,15 +3,15 @@ MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV PHP_INSTALL_DIR=/usr/local/php \
     RUN_USER=www \
-    PHP_VERSION=7.0.8 \
+    PHP_VERSION=7.0.11 \
     IMAGICK_PECL_VERSION=3.4.3RC1 \
     MEMCACHE_PECL_VERSION=3.0.8 \
     LIBMEMCACHED_VERSION=1.0.18 \
     MEMCACHED_PECL_VERSION=2.2.0 \
-    REDIS_PECL_VERSION=2.2.8 \
-    SWOOLE_VERSION=1.8.7
+    REDIS_PECL_VERSION=3.0.0 \
+    SWOOLE_VERSION=1.8.12
 
-RUN apt-get update && apt-get upgrade -y && \
+RUN apt-get update && apt-get upgrade -yqq && \
     apt-get install -y ca-certificates wget gcc g++ make cmake autoconf patch pkg-config sendmail openssl libxslt-dev libicu-dev libssl-dev curl libcurl4-openssl-dev libxml2 libxml2-dev libjpeg-dev libpng12-dev libpng3 libfreetype6 libfreetype6-dev libsasl2-dev  && \
     rm -rf /var/lib/apt/lists/*
 
