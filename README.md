@@ -33,7 +33,7 @@ docker run --name web \
            -d ywfwj2008/tengine-php
 ```
 ### nginx control
-start|stop|restart|force-reload|status|configtest|quietupgrade|terminate|destroy
+start|stop|restart|reload|status|configtest|quietupgrade|terminate|destroy
 ```
 docker exec -d web service nginx restart
 ```
