@@ -6,7 +6,7 @@
 
 ## usage
 
-### wish mysql
+### run wish mysql
 ```
 docker run --name mysql \
            -v /home/conf/mysql:/etc/mysql/conf.d \
@@ -24,7 +24,7 @@ docker run --name web \
            -p 80:80 -p 443:443 \
            -d ywfwj2008/tengine-php
 ```
-### not with mysql
+### run didn't with mysql
 ```
 docker run --name web \
            -v /home/wwwlogs:/home/wwwlogs \
@@ -33,12 +33,12 @@ docker run --name web \
            -d ywfwj2008/tengine-php
 ```
 ### nginx control
-start|stop|restart|reload|status|configtest|quietupgrade|terminate|destroy
+start|stop|status|restart|reload|configtest
 ```
 docker exec -d web service nginx restart
 ```
 ### php control
-start|stop|force-quit|restart|reload|status
+start|stop|restart|reload|status
 ```
-docker exec -d web service php restart
+docker exec -d web service php-fpm restart
 ```
