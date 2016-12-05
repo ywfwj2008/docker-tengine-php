@@ -1,8 +1,10 @@
-# docker-tengine-php
+# docker-php-nginx
 
-    Tengine + PHP + ImageMagick + ZendOpcache
-    Memcache + Memcached + Redis + Swoole
+    Nginx(Tengine) + PHP
+    ImageMagick + ZendOpcache
+    Memcache + Memcached + Redis
     ZendGuardLoader + ionCube
+    Swoole + Workman
 
 ## usage
 
@@ -18,11 +20,11 @@ docker run --name mysql \
 ```
 docker run --name web \
            --link mysql:localmysql \
-           -v /home/conf/nginx:/usr/local/tengine/conf \
+           -v /home/conf/nginx:/usr/local/nginx/conf \
            -v /home/wwwlogs:/home/wwwlogs \
            -v /home/wwwroot:/home/wwwroot \
            -p 80:80 -p 443:443 \
-           -d ywfwj2008/tengine-php
+           -d ywfwj2008/php-nginx
 ```
 ### run didn't with mysql
 ```
@@ -30,7 +32,7 @@ docker run --name web \
            -v /home/wwwlogs:/home/wwwlogs \
            -v /home/wwwroot:/home/wwwroot \
            -p 80:80 -p 443:443 \
-           -d ywfwj2008/tengine-php
+           -d ywfwj2008/php-nginx
 ```
 ### nginx control
 start|stop|status|restart|reload|configtest

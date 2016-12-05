@@ -1,4 +1,4 @@
-FROM ywfwj2008/php:7.0
+FROM ywfwj2008/php:7.1
 MAINTAINER ywfwj2008 <ywfwj2008@163.com>
 
 ENV WEBSERVER_INSTALL_DIR=/usr/local/tengine \

@@ -2,6 +2,7 @@
 set -e
 
 # reset memory
+PHP_INSTALL_DIR=/usr/local/php
 Mem=`free -m | awk '/Mem:/{print $2}'`
 if [ $Mem -le 640 ];then
     MEMORY_LIMIT=64
@@ -49,8 +50,11 @@ fi
 
 # optimize php.ini
 sed -i "s@^memory_limit.*@memory_limit = ${MEMORY_LIMIT}M@" $PHP_INSTALL_DIR/etc/php.ini
-sed -i "s@^opcache.memory_consumption.*@opcache.memory_consumption=$MEMORY_LIMIT@" $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini
+if [ -f "$PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini" ];then
+    sed -i "s@^opcache.memory_consumption.*@opcache.memory_consumption=$MEMORY_LIMIT@" $PHP_INSTALL_DIR/etc/php.d/ext-opcache.ini
+fi
 
+source /etc/profile
 service php-fpm start
 
 exec "$@"
